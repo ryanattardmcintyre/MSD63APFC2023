@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using MSD63AWebApp.DataAccess;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -17,6 +18,8 @@ namespace MSD63AWebApp
     {
         public Startup(IConfiguration configuration)
         {
+            System.Environment.SetEnvironmentVariable("GOOGLE_APPLICATION_CREDENTIALS",
+             @"C:\Users\attar\source\repos\MSD63APFC2023\MSD63AWebApp\MSD63AWebApp\msd63a2023-19b02b290325.json");
             Configuration = configuration;
         }
 
@@ -40,6 +43,11 @@ namespace MSD63AWebApp
             });
 
             services.AddControllersWithViews();
+
+            string project = Configuration["project"];
+            //Dependency Injection
+            services.AddScoped<FirestoreBookRepository>(provider => new FirestoreBookRepository(project));
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

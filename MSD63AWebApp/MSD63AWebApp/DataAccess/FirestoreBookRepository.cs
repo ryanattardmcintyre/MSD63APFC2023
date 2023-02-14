@@ -33,5 +33,39 @@ namespace MSD63AWebApp.DataAccess
             }
             return books;
         }
+
+        public async Task<Book> GetBook(string isbn)
+        {
+            List<Book> books = new List<Book>();
+            Query allBooksQuery = db.Collection("books").WhereEqualTo("Isbn", isbn); ;
+            QuerySnapshot allBooksQuerySnapshot = await allBooksQuery.GetSnapshotAsync();
+  
+            foreach (DocumentSnapshot documentSnapshot in allBooksQuerySnapshot.Documents)
+            {
+                Book b = documentSnapshot.ConvertTo<Book>();
+                books.Add(b);
+            }
+
+           return books.FirstOrDefault();
+        }
+
+        public async void UpdateBook(Book b)
+        {
+            DeleteBook(b.Isbn);
+            AddBook(b);
+        }
+
+        public async void DeleteBook(string isbn)
+        {
+            List<Book> books = new List<Book>();
+            Query allBooksQuery = db.Collection("books").WhereEqualTo("Isbn", isbn); ;
+            QuerySnapshot allBooksQuerySnapshot = await allBooksQuery.GetSnapshotAsync();
+
+            string id = allBooksQuerySnapshot.Documents[0].Id;
+            DocumentReference booksRef = db.Collection("books").Document(id);
+            await booksRef.DeleteAsync();
+        }
+
+
     }
 }
