@@ -49,13 +49,25 @@ namespace MSD63AWebApp.DataAccess
            return books.FirstOrDefault();
         }
 
-        public async void UpdateBook(Book b)
+        public async Task UpdateBook(Book b)
         {
-            DeleteBook(b.Isbn);
-            AddBook(b);
+            Query allBooksQuery = db.Collection("books").WhereEqualTo("Isbn", b.Isbn); ;
+            QuerySnapshot allBooksQuerySnapshot = await allBooksQuery.GetSnapshotAsync();
+            if(allBooksQuerySnapshot.Documents.Count>0)
+            {
+                string id = allBooksQuerySnapshot.Documents[0].Id;
+                DocumentReference booksRef = db.Collection("books").Document(id);
+                await booksRef.SetAsync(b);
+            }
+            else
+            {
+                throw new Exception("No books with isbn " + b.Isbn);
+            }
+
+           
         }
 
-        public async void DeleteBook(string isbn)
+        public async Task DeleteBook(string isbn)
         {
             List<Book> books = new List<Book>();
             Query allBooksQuery = db.Collection("books").WhereEqualTo("Isbn", isbn); ;

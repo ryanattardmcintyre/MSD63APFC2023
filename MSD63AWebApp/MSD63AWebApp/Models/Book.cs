@@ -20,5 +20,7 @@ namespace MSD63AWebApp.Models
         public string Author { get; set; }
         [FirestoreProperty]
         public string Category { get; set; }
+
+        
     }
 }

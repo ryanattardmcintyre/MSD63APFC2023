@@ -48,7 +48,57 @@ namespace MSD63AWebApp.Controllers
             return View(list);
         }
 
+        public async Task<IActionResult> Delete(string isbn)
+        {
+            try
+            {
+                await fbr.DeleteBook(isbn);
+                TempData["success"] = "Book was deleted successfully";
+            }
+            catch (Exception ex)
+            {
+                TempData["error"] = "Book was not deleted";
+            }
+
+            return RedirectToAction("Index");
+        
+        }
        
+        //part 1 - this method will be called when the link Edit is clicked and a page will be
+        //shown to the user with the original data in the textboxes
+        public async Task<IActionResult> Edit(string isbn)
+        {
+            var book = await fbr.GetBook(isbn);
+            return View(book);
+            
+        }
+
+        //Part 2- this method will be called after the user filled in the data in the textboxes and
+        //clicked submit
+        [HttpPost]
+        public async Task<IActionResult> Edit(Book b)
+        {
+            try
+            {
+                await fbr.UpdateBook(b);
+                TempData["success"] = "Book was deleted successfully";
+                return RedirectToAction("Index");
+            }
+            catch (Exception ex)
+            {
+                TempData["error"] = "Book was not edited";
+                return View(b);
+            }
+
+            
+        }
+
+
+        public async Task<IActionResult> Details(string isbn)
+        {
+            var b = await fbr.GetBook(isbn);
+            return View(b);
+        }
 
       
     }
