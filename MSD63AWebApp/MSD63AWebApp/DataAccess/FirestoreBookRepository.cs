@@ -15,6 +15,18 @@ namespace MSD63AWebApp.DataAccess
             db = FirestoreDb.Create(project);
         }
 
+        public async Task<string> GetBookDocumentId(string isbn)
+        {
+            Query allBooksQuery = db.Collection("books").WhereEqualTo("Isbn", isbn); ;
+            QuerySnapshot allBooksQuerySnapshot = await allBooksQuery.GetSnapshotAsync();
+            var document = allBooksQuerySnapshot.FirstOrDefault();
+            if (document != null)
+                return document.Id;
+            else
+                return null;
+
+        }
+
         public void AddBook(Book b)
         {
             DocumentReference docRef = db.Collection("books").Document();

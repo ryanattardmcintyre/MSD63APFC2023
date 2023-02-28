@@ -46,7 +46,12 @@ namespace MSD63AWebApp
 
             string project = Configuration["project"];
             //Dependency Injection
-            services.AddScoped<FirestoreBookRepository>(provider => new FirestoreBookRepository(project));
+
+            FirestoreBookRepository fbr = new FirestoreBookRepository(project);
+
+            services.AddScoped<FirestoreBookRepository>(provider => fbr);
+            services.AddScoped<FirestoreReservationsRepository>(provider
+                => new FirestoreReservationsRepository(project, fbr));
 
         }
 

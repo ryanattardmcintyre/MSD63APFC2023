@@ -49,9 +49,13 @@
                 @Html.DisplayFor(modelItem => item.Category)
             </td>
             <td>
-                @Html.ActionLink("Edit", "Edit", new { isbn = item.Isbn}) |
-                @Html.ActionLink("Details", "Details", new { isbn=item.Isbn }) |
-                @Html.ActionLink("Delete", "Delete", new { isbn=item.Isbn })
+                @Html.ActionLink("Edit", "Edit", new { isbn = item.Isbn }) |
+                @Html.ActionLink("Details", "Details", new { isbn = item.Isbn }) |
+                @Html.ActionLink("Delete", "Delete", new { isbn = item.Isbn })|
+                @Html.ActionLink("Reserve Book", "Create", "Reservations", new { isbn = item.Isbn })
+                @Html.ActionLink("View History", "List", "Reservations", new { isbn = item.Isbn })
+
+                @*<a href="/Reservations/Create?isbn=@item.Isbn">Reserve book</a>*@
             </td>
         </tr>
 }

@@ -10,19 +10,13 @@ namespace MSD63AWebApp.Models
     public class Reservation
     {
         [FirestoreProperty]
-        public string User { get; set; }
+        public string Email { get; set; }
 
         [FirestoreProperty]
-        public DateTime From { get; set; }
+        public Google.Cloud.Firestore.Timestamp From { get; set; }
 
         [FirestoreProperty]
-        public string FromStr { get; set; }
-
-        [FirestoreProperty]
-        public DateTime To { get; set; }
-
-        [FirestoreProperty]
-        public string ToStr { get; set; }
+        public Google.Cloud.Firestore.Timestamp To { get; set; }
 
         [FirestoreProperty]
         public string Isbn { get; set; }
