@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Google.Cloud.Storage.V1;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
 using MSD63AWebApp.DataAccess;
 using MSD63AWebApp.Models;
 using System;
@@ -25,11 +27,26 @@ namespace MSD63AWebApp.Controllers
 
         //Part 2 - is called when the user clicked on submit and the details are submitted to the web server
         [HttpPost]
-        public IActionResult Create(Book b)
+        public IActionResult Create(Book b, IFormFile file)
         {
             try
             {
-                fbr.AddBook(b);
+                string newFilename;
+                //1) ebook is going to be stored in the cloud storage i.e. in the bucket with name msd63a2023ra
+                if (file != null)
+                {
+                    var storage = StorageClient.Create();
+                    using var fileStream = file.OpenReadStream(); //reads the uploaded file from the server's memory
+                    newFilename = Guid.NewGuid().ToString() + System.IO.Path.GetExtension(file.FileName);
+
+                    storage.UploadObject("msd63a2023ra", newFilename, null, fileStream);   
+                    //https://storage.googleapis.com/msd63a2023ra/security.jpg //will work only if it is a uniform bucket with allUsers enabled
+                    b.Link = $"https://storage.googleapis.com/{"msd63a2023ra"}/{newFilename}";
+                }
+             
+                //2) will store the book details/info in the NoSql database (Firestore)
+              
+                fbr.AddBook(b); 
                 TempData["success"] = "Book was added successfully";
             }
             catch (Exception e)

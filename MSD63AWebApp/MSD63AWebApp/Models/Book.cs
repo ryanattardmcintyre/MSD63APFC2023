@@ -21,6 +21,9 @@ namespace MSD63AWebApp.Models
         [FirestoreProperty]
         public string Category { get; set; }
 
+        [FirestoreProperty]
+        public string Link { get; set; }
+
         
     }
 }
