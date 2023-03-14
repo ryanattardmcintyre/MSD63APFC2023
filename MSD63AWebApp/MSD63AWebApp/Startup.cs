@@ -49,10 +49,16 @@ namespace MSD63AWebApp
 
             FirestoreBookRepository fbr = new FirestoreBookRepository(project);
 
+
+            string cacheConnectionStringLocal = "127.0.0.1:6379";
+            //string cacheConnectionStringRedisLabs = "redis-14410.c1.us-east1-2.gce.cloud.redislabs.com:14410,password=pc1feaAiYI2d1dGHc7JBak8YxnmJ4hBv";
+
             services.AddScoped<FirestoreBookRepository>(provider => fbr);
             services.AddScoped<FirestoreReservationsRepository>(provider
                 => new FirestoreReservationsRepository(project, fbr));
-
+            services.AddScoped<RedisCacheMenusRepository>(provider => 
+            new RedisCacheMenusRepository(cacheConnectionStringLocal));
+            services.AddScoped<PubsubEmailsRepository>(provider => new PubsubEmailsRepository(project));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

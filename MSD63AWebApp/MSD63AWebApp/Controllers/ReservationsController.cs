@@ -12,10 +12,13 @@ namespace MSD63AWebApp.Controllers
     {
         FirestoreBookRepository _fbr;
         FirestoreReservationsRepository _frr;
-        public ReservationsController(FirestoreBookRepository fbr, FirestoreReservationsRepository frr)
+        PubsubEmailsRepository _pser;
+        public ReservationsController(FirestoreBookRepository fbr, FirestoreReservationsRepository frr,
+            PubsubEmailsRepository pser)
         {
             _fbr = fbr;
             _frr = frr;
+            _pser = pser;
         }
 
 
@@ -46,6 +49,8 @@ namespace MSD63AWebApp.Controllers
 
                 await _frr.AddReservation(r);
                 TempData["success"] = "Reservation added successfully";
+
+                _pser.PushMessage(r);
 
                 //redirect to Books/Index
                 return RedirectToAction("Index", "Books");

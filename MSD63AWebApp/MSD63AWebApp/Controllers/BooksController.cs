@@ -1,4 +1,5 @@
 ﻿using Google.Cloud.Storage.V1;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using MSD63AWebApp.DataAccess;
@@ -20,13 +21,14 @@ namespace MSD63AWebApp.Controllers
 
 
         //Part 1 - is called to show the user a blank page where to input the book details
+        [Authorize]
         public IActionResult Create()
         {
             return View();
         }
 
         //Part 2 - is called when the user clicked on submit and the details are submitted to the web server
-        [HttpPost]
+        [HttpPost][Authorize]
         public IActionResult Create(Book b, IFormFile file)
         {
             try
@@ -69,6 +71,14 @@ namespace MSD63AWebApp.Controllers
         {
             try
             {
+                var book = await fbr.GetBook(isbn);
+                string link = book.Link; //http://xxxxxxxxx/bucketname/nameOffile.pdf
+
+                var storage = StorageClient.Create();
+                string objectName = System.IO.Path.GetFileName(link);
+                storage.DeleteObject("msd63a2023ra", objectName);
+
+
                 await fbr.DeleteBook(isbn);
                 TempData["success"] = "Book was deleted successfully";
             }
