@@ -20,5 +20,31 @@ namespace MSD63AWebApp.Models
 
         [FirestoreProperty]
         public string Isbn { get; set; }
+
+
+        public DateTime FromDt
+        {
+            get {
+                return From.ToDateTime();
+            }
+
+            set {
+                From = Google.Cloud.Firestore.Timestamp.FromDateTime(value.ToUniversalTime());
+            }
+        }
+
+
+        public DateTime ToDt
+        {
+            get
+            {
+                return To.ToDateTime();
+            }
+
+            set
+            {
+                To = Google.Cloud.Firestore.Timestamp.FromDateTime(value.ToUniversalTime());
+            }
+        }
     }
 }

@@ -15,8 +15,17 @@ namespace MSD63AWebApp.DataAccess
 
         public RedisCacheMenusRepository(string connectionstring)
         {
-            var cn = ConnectionMultiplexer.Connect(connectionstring);
-            myCacheDb = cn.GetDatabase();
+            try
+            {
+                var cn = ConnectionMultiplexer.Connect(connectionstring);
+                myCacheDb = cn.GetDatabase();
+            }
+            catch (Exception ex)
+            {
+                //log
+
+
+            }
         
         }
         public async void AddMenu(Menu m)
@@ -30,10 +39,20 @@ namespace MSD63AWebApp.DataAccess
 
         public async Task<List<Menu>> GetMenus()
         {
-            string menus = await myCacheDb.StringGetAsync("menus");
+            try
+            {
+                string menus = await myCacheDb.StringGetAsync("menus");
 
-            var list =JsonConvert.DeserializeObject<List<Menu>>(menus);
-            return list;
+                var list = JsonConvert.DeserializeObject<List<Menu>>(menus);
+                return list;
+            }catch (Exception ex)
+            { //log
+              
+            
+            }
+    return new List<Menu>();
+        
+
         }
     }
 }

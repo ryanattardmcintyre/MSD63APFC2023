@@ -56,8 +56,16 @@ namespace MSD63AWebApp
             services.AddScoped<FirestoreBookRepository>(provider => fbr);
             services.AddScoped<FirestoreReservationsRepository>(provider
                 => new FirestoreReservationsRepository(project, fbr));
-            services.AddScoped<RedisCacheMenusRepository>(provider => 
-            new RedisCacheMenusRepository(cacheConnectionStringLocal));
+            try
+            {
+                services.AddScoped<RedisCacheMenusRepository>(provider =>
+              new RedisCacheMenusRepository(cacheConnectionStringLocal));
+            }
+            catch(Exception ex)
+            {
+                //logged
+
+            }
             services.AddScoped<PubsubEmailsRepository>(provider => new PubsubEmailsRepository(project));
         }
 

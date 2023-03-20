@@ -50,7 +50,7 @@ namespace MSD63AWebApp.Controllers
                 await _frr.AddReservation(r);
                 TempData["success"] = "Reservation added successfully";
 
-                _pser.PushMessage(r);
+                _pser.PushMessage(r); //as soon as the reservation is created, we push its details onto the queue to be sent as an email
 
                 //redirect to Books/Index
                 return RedirectToAction("Index", "Books");
