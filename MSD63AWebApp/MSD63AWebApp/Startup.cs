@@ -1,3 +1,4 @@
+using Google.Cloud.SecretManager.V1;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.Google;
 using Microsoft.AspNetCore.Builder;
@@ -7,6 +8,8 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using MSD63AWebApp.DataAccess;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -16,10 +19,11 @@ namespace MSD63AWebApp
 {
     public class Startup
     {
-        public Startup(IConfiguration configuration)
+        public Startup(IConfiguration configuration, IWebHostEnvironment host)
         {
             System.Environment.SetEnvironmentVariable("GOOGLE_APPLICATION_CREDENTIALS",
-             @"C:\Users\attar\source\repos\MSD63APFC2023\MSD63AWebApp\MSD63AWebApp\msd63a2023-19b02b290325.json");
+                host.ContentRootPath + "\\msd63a2023-19b02b290325.json"
+             );
             Configuration = configuration;
         }
 
@@ -28,6 +32,26 @@ namespace MSD63AWebApp
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            string project = Configuration["project"];
+            //oauth_secretkey
+
+
+            // Create the client.
+            SecretManagerServiceClient client = SecretManagerServiceClient.Create();
+
+            // Build the resource name.
+            SecretVersionName secretVersionName = new SecretVersionName(project,
+                "oauth_secretkey", 
+                "1");
+
+            // Call the API.
+            AccessSecretVersionResponse result = client.AccessSecretVersion(secretVersionName);
+
+            // Convert the payload to a string. Payloads are bytes by default.
+            String payload = result.Payload.Data.ToStringUtf8();
+            var key = JObject.Parse(payload);
+            string secretKey = key["Authentication:Google:ClientSecret"].ToString();
+
             services
             .AddAuthentication(options =>
             {
@@ -38,13 +62,13 @@ namespace MSD63AWebApp
             .AddGoogle(options =>
             {
                 options.ClientId = "1034457160308-bbnb2qv7alljklf0qulfmr85828gdgem.apps.googleusercontent.com";
-                options.ClientSecret = Configuration["Authentication:Google:ClientSecret"]; 
+                options.ClientSecret = secretKey; 
                 
             });
 
             services.AddControllersWithViews();
 
-            string project = Configuration["project"];
+         
             //Dependency Injection
 
             FirestoreBookRepository fbr = new FirestoreBookRepository(project);

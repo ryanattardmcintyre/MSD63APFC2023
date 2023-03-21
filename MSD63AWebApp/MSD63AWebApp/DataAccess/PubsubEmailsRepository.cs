@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Common.Models;
 using Google.Cloud.PubSub.V1;
 using Google.Protobuf;
 using MSD63AWebApp.Models;

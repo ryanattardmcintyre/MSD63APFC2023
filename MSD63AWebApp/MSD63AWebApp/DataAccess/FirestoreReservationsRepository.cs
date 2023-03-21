@@ -1,4 +1,5 @@
-﻿using Google.Cloud.Firestore;
+﻿using Common.Models;
+using Google.Cloud.Firestore;
 using MSD63AWebApp.Models;
 using System;
 using System.Collections.Generic;

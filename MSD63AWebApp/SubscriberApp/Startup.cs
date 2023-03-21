@@ -1,3 +1,4 @@
+using Google.Cloud.Diagnostics.AspNetCore3;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
@@ -13,14 +14,17 @@ namespace SubscriberApp
 {
     public class Startup
     {
-        public Startup(IConfiguration configuration)
+        public Startup(IConfiguration configuration, IWebHostEnvironment host)
         {
+
+            //builder.Environment.ContentRootPath //.net6
 
             //this code which has to change when you're about to host the application
 
-            System.Environment.SetEnvironmentVariable("GOOGLE_APPLICATION_CREDENTIALS",
- @"C:\Users\attar\source\repos\MSD63APFC2023\MSD63AWebApp\SubscriberApp\msd63a2023-19b02b290325.json");
-            Configuration = configuration;
+                System.Environment.SetEnvironmentVariable("GOOGLE_APPLICATION_CREDENTIALS",
+                    host.ContentRootPath + "\\msd63a2023-19b02b290325.json"
+                 );
+                Configuration = configuration;
         }
 
         public IConfiguration Configuration { get; }
@@ -28,6 +32,7 @@ namespace SubscriberApp
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+         
             services.AddControllersWithViews();
         }
 

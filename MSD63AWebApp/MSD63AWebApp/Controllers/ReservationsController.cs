@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Common.Models;
+using Microsoft.AspNetCore.Mvc;
 using MSD63AWebApp.DataAccess;
 using MSD63AWebApp.Models;
 using System;

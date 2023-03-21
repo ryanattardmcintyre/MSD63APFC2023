@@ -5,6 +5,10 @@ using System.Linq;
 using System.Threading.Tasks;
 using Google.Cloud.PubSub.V1;
 using System.Threading;
+using Common.Models;
+using Newtonsoft.Json;
+using RestSharp;
+using RestSharp.Authenticators;
 
 namespace SubscriberApp.Controllers
 {
@@ -17,7 +21,7 @@ namespace SubscriberApp.Controllers
         //send them out as emails
         public async Task<IActionResult> Index()
         {
-            bool acknowledge = false; //true - message will be pulled permanently from the queue
+            bool acknowledge = true; //true - message will be pulled permanently from the queue
                                      //false - message will be restored back into the queue once the deadline of the acknowledgement exceeds
             string projectId = "msd63a2023";
             string subscriptionId = "messages-sub";
@@ -34,6 +38,23 @@ namespace SubscriberApp.Controllers
                 string text = System.Text.Encoding.UTF8.GetString(message.Data.ToArray());
 
                 //code that sends out the email
+                Reservation r = JsonConvert.DeserializeObject<Reservation>(text);
+
+                //you have to use MailGun/Sendgrid/....
+
+              /* RestClient client = new RestClient("https://api.mailgun.net/v3");
+                client. = new HttpBasicAuthenticator("api", "");
+              
+                RestRequest request = new RestRequest();
+                request.AddParameter("domain", "", ParameterType.UrlSegment);
+                request.Resource = "{domain}/messages";
+                request.AddParameter("from", "ryanattarddemo@gmail.com");
+                request.AddParameter("to", "ryanattard@gmail.com");
+                request.AddParameter("subject", "Testing Mail Feature");
+                request.AddParameter("text", $"This is to confirm that book with isbn {r.Isbn} was reserved {r.FromDt.ToLongDateString()} till {r.ToDt.ToLongTimeString()}");
+                request.Method = Method.Post;
+                client.ExecuteAsync(request).Wait();
+                */
 
                 messageOutput += $"Message {message.MessageId}: {text}";
                 Console.WriteLine($"Message {message.MessageId}: {text}");
