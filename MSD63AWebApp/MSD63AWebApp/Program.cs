@@ -1,3 +1,4 @@
+using Google.Cloud.Diagnostics.Common;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
@@ -7,6 +8,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
+using Google.Cloud.Diagnostics.AspNetCore3;
+ 
 namespace MSD63AWebApp
 {
     public class Program
@@ -20,6 +23,7 @@ namespace MSD63AWebApp
             Host.CreateDefaultBuilder(args)
                 .ConfigureWebHostDefaults(webBuilder =>
                 {
+                    webBuilder.ConfigureLogging(builder => builder.AddGoogle(new LoggingServiceOptions { ProjectId = "msd63a2023" }));
                     webBuilder.UseStartup<Startup>();
                 });
     }

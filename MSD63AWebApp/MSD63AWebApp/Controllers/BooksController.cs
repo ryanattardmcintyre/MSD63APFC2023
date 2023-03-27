@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 using MSD63AWebApp.DataAccess;
 using MSD63AWebApp.Models;
 using System;
@@ -14,8 +15,10 @@ namespace MSD63AWebApp.Controllers
     public class BooksController : Controller
     {
         FirestoreBookRepository fbr;
-        public BooksController(FirestoreBookRepository _fbr)
+        ILogger<BooksController> _logger;
+        public BooksController(FirestoreBookRepository _fbr, ILogger<BooksController> logger)
         {
+            _logger = logger;
             fbr = _fbr;
         }
 
@@ -33,6 +36,8 @@ namespace MSD63AWebApp.Controllers
         {
             try
             {
+                _logger.LogInformation($"User {User.Identity.Name} is uploading a file with filename {file.FileName}");
+                throw new Exception("Error on purpose");
                 string newFilename;
                 //1) ebook is going to be stored in the cloud storage i.e. in the bucket with name msd63a2023ra
                 if (file != null)
@@ -40,19 +45,25 @@ namespace MSD63AWebApp.Controllers
                     var storage = StorageClient.Create();
                     using var fileStream = file.OpenReadStream(); //reads the uploaded file from the server's memory
                     newFilename = Guid.NewGuid().ToString() + System.IO.Path.GetExtension(file.FileName);
-
+                  
+                    _logger.LogInformation($"File {file.FileName} has been renamed to {newFilename}");
+                    
                     storage.UploadObject("msd63a2023ra", newFilename, null, fileStream);   
                     //https://storage.googleapis.com/msd63a2023ra/security.jpg //will work only if it is a uniform bucket with allUsers enabled
                     b.Link = $"https://storage.googleapis.com/{"msd63a2023ra"}/{newFilename}";
+
+                    _logger.LogInformation($"File {newFilename} has been uploaded. Link {b.Link}");
                 }
-             
+
                 //2) will store the book details/info in the NoSql database (Firestore)
-              
-                fbr.AddBook(b); 
+                _logger.LogInformation($"File {file.FileName} will be saved to db");
+                fbr.AddBook(b);
+                _logger.LogInformation($"File {file.FileName} with isbn {b.Isbn} has been saved in the database");
                 TempData["success"] = "Book was added successfully";
             }
             catch (Exception e)
             {
+                _logger.LogError(e, $"File with filename {file.FileName} was either not saved or not saved in db");
                 //log the exceptions
                 TempData["error"] = "Book was not added";
             }

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Google.Cloud.Diagnostics.AspNetCore3;
 using MSD63AWebApp.Models;
 using Newtonsoft.Json;
 using StackExchange.Redis;
@@ -12,11 +13,13 @@ namespace MSD63AWebApp.DataAccess
     {
 
         IDatabase myCacheDb;
-
-        public RedisCacheMenusRepository(string connectionstring)
+  
+        public RedisCacheMenusRepository(string connectionstring )
         {
             try
             {
+                
+
                 var cn = ConnectionMultiplexer.Connect(connectionstring);
                 myCacheDb = cn.GetDatabase();
             }
@@ -28,7 +31,7 @@ namespace MSD63AWebApp.DataAccess
             }
         
         }
-        public async void AddMenu(Menu m)
+        public async void AddMenu(Menu m, )
         {
             var list = await GetMenus();
             list.Add(m);

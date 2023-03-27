@@ -1,3 +1,5 @@
+using Google.Cloud.Diagnostics.AspNetCore3;
+using Google.Cloud.Diagnostics.Common;
 using Google.Cloud.SecretManager.V1;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.Google;
@@ -14,6 +16,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Web.Http.ExceptionHandling;
 
 namespace MSD63AWebApp
 {
@@ -34,6 +37,16 @@ namespace MSD63AWebApp
         {
             string project = Configuration["project"];
             //oauth_secretkey
+
+            services.AddGoogleErrorReportingForAspNetCore(new ErrorReportingServiceOptions
+            {
+                // Replace ProjectId with your Google Cloud Project ID.
+                ProjectId = project,
+                // Replace Service with a name or identifier for the service.
+                ServiceName = "MainWebApp",
+                // Replace Version with a version for the service.
+                Version = "1"
+            });
 
 
             // Create the client.
@@ -68,6 +81,7 @@ namespace MSD63AWebApp
 
             services.AddControllersWithViews();
 
+        
          
             //Dependency Injection
 

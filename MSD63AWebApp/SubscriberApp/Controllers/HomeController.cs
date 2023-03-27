@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Google.Cloud.Diagnostics.AspNetCore3;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using SubscriberApp.Models;
 using System;
@@ -18,8 +19,9 @@ namespace SubscriberApp.Controllers
             _logger = logger;
         }
 
-        public IActionResult Index()
+        public IActionResult Index( )
         {
+ 
             return View();
         }
 
