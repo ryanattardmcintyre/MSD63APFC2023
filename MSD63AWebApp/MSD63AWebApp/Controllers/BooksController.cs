@@ -36,8 +36,11 @@ namespace MSD63AWebApp.Controllers
         {
             try
             {
+
+                string email = User.Claims.ElementAt(4).Value.ToString();
+
                 _logger.LogInformation($"User {User.Identity.Name} is uploading a file with filename {file.FileName}");
-                throw new Exception("Error on purpose");
+              //  throw new Exception("Error on purpose");
                 string newFilename;
                 //1) ebook is going to be stored in the cloud storage i.e. in the bucket with name msd63a2023ra
                 if (file != null)

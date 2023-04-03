@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
 using MSD63AWebApp.DataAccess;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
@@ -22,19 +23,32 @@ namespace MSD63AWebApp
 {
     public class Startup
     {
-        public Startup(IConfiguration configuration, IWebHostEnvironment host)
+        private ILogger _logger;
+        public Startup(IConfiguration configuration, IWebHostEnvironment host )
         {
+          
+
             System.Environment.SetEnvironmentVariable("GOOGLE_APPLICATION_CREDENTIALS",
                 host.ContentRootPath + "\\msd63a2023-19b02b290325.json"
              );
+
+
+            var loggerFactory = LoggerFactory.Create(builder =>
+            {
+                builder.AddGoogle(new LoggingServiceOptions { ProjectId = "msd63a2023" });
+            });
+
+            _logger = loggerFactory.CreateLogger<Startup>();
+
             Configuration = configuration;
+           
         }
 
         public IConfiguration Configuration { get; }
 
         // This method gets called by the runtime. Use this method to add services to the container.
-        public void ConfigureServices(IServiceCollection services)
-        {
+        public void ConfigureServices(IServiceCollection services )
+        { 
             string project = Configuration["project"];
             //oauth_secretkey
 
@@ -94,10 +108,13 @@ namespace MSD63AWebApp
             services.AddScoped<FirestoreBookRepository>(provider => fbr);
             services.AddScoped<FirestoreReservationsRepository>(provider
                 => new FirestoreReservationsRepository(project, fbr));
+
+            services.AddLogging(); 
             try
             {
+
                 services.AddScoped<RedisCacheMenusRepository>(provider =>
-              new RedisCacheMenusRepository(cacheConnectionStringLocal));
+                    new RedisCacheMenusRepository(cacheConnectionStringLocal, _logger));
             }
             catch(Exception ex)
             {
