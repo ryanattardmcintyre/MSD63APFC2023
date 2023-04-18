@@ -6,11 +6,17 @@ using System.Collections;
 using System.Linq;
 using Google.Cloud.Firestore;
 using Google.Cloud.Firestore.V1;
+using Microsoft.Extensions.Logging;
 
 namespace httpFunction;
 
 public class Function : IHttpFunction
 {
+
+ILogger<Function> _logger;
+public Function(ILogger<Function> logger) =>
+    _logger = logger;
+
     /// <summary>
     /// Logic for your function goes here.
     /// </summary>
@@ -24,9 +30,10 @@ public class Function : IHttpFunction
 
     public async Task HandleAsync(HttpContext context)
     {
-      System.Environment.SetEnvironmentVariable("GOOGLE_APPLICATION_CREDENTIALS",
-               "msd63a2023-19b02b290325.json");
+ //   System.Environment.SetEnvironmentVariable("GOOGLE_APPLICATION_CREDENTIALS",
+    //          "msd63a2023-19b02b290325.json");
 
+        _logger.LogInformation("Function has been triggered");
 
         HttpRequest request = context.Request;
             // Check URL parameters for "message" field
