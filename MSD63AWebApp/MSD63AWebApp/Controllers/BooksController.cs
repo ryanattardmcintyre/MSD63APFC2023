@@ -75,6 +75,7 @@ namespace MSD63AWebApp.Controllers
 
         public IActionResult Index()
         {
+            _logger.LogInformation("about to load a list of books");
             Task<List<Book>> t = fbr.GetBooks();
             
             var list = t.Result;

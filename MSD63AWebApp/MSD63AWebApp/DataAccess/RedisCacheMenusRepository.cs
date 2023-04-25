@@ -46,10 +46,10 @@ namespace MSD63AWebApp.DataAccess
             try
             {
                 _logger.LogInformation("Menus are about to be read from the Cache");
-                string menus = await myCacheDb.StringGetAsync("menus");
+            //    string menus = await myCacheDb.StringGetAsync("menus");
 
-                var list = JsonConvert.DeserializeObject<List<Menu>>(menus);
-                return list;
+              //  var list = JsonConvert.DeserializeObject<List<Menu>>(menus);
+                return new List<Menu>() { };
             }catch (Exception ex)
             { //log
               
